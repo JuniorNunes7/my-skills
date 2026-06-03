@@ -10,6 +10,17 @@ Repositório pessoal para organizar skills.
 
 Novas skills devem ser adicionadas dentro de `skills/`, cada uma em sua própria pasta.
 
+## Instalação
+
+```bash
+npx skills add JuniorNunes7/ai-skills
+```
+
+Instalar skill específica
+```bash
+npx skills add JuniorNunes7/ai-skills --skill code-reviewer
+```
+
 ## Como Usar Localmente
 
 Copie a pasta da skill para o diretório global de skills do Codex:
