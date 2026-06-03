@@ -21,7 +21,6 @@ version: 1
 repository: owner/repo
 updated_at: YYYY-MM-DD
 preferences: []
-project_conventions: []
 accepted_exceptions: []
 review_output:
   default_mode: ask
@@ -34,7 +33,6 @@ Store only durable, confirmed decisions:
 
 - Preferred output format.
 - Review strictness preferences.
-- Project conventions the user confirmed.
 - Accepted exceptions to general best practices.
 - Repeatedly accepted architectural constraints.
 
@@ -50,6 +48,8 @@ After user feedback, analyze whether anything should become memory. Suggest savi
 - Safe to store without code, secrets, or transient PR details.
 
 Do not wait for the user to ask for memory if their feedback reveals a reusable preference.
+
+When the user explains why a review finding should pass, proactively suggest saving a compact `accepted_exceptions` entry. Include the tradeoff or boundary, not the full PR context.
 
 If the feedback should not be stored, explain why briefly. Common reasons:
 
@@ -75,4 +75,4 @@ Before updating memory, confirm that the decision should be remembered unless th
 
 When memory conflicts with current project docs or code, prefer current project evidence and ask whether memory should be updated.
 
-If memory grows noisy, summarize several related entries into one compact convention.
+If memory grows noisy, propose summarizing related entries into a few compact preferences or accepted exceptions, then ask before updating the file.
