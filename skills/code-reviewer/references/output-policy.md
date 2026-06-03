@@ -53,7 +53,11 @@ Publish through the GitHub review API with inline file comments. Use a normal `C
 Each inline comment should be self-contained:
 
 ```text
-[major] Este caminho não trata X. Se Y ocorrer, Z quebra. Sugestão: validar A antes de chamar B ou cobrir esse caso no fluxo C.
+**[major]**
+
+Este caminho não trata X. Se Y ocorrer, Z quebra. 
+
+**Sugestão:** validar A antes de chamar B ou cobrir esse caso no fluxo C.
 ```
 
 Use the review body for:
