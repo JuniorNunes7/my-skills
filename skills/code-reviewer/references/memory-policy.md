@@ -1,19 +1,15 @@
 # Memory Policy
 
 ## Location
-
-Store memory outside the installed skill directory and never inside the repository being reviewed:
+Use only the exact repo memory file. Store memory outside the reviewed repository:
 
 `../code-reviewer-data/memories/<owner>__<repo>.yaml`
 
-The path is relative to the `code-reviewer` skill directory. For example, if the skill is installed at `~/.agents/skills/code-reviewer`, memory lives at `~/.agents/skills/code-reviewer-data/memories/*.yaml`.
+The path is relative to the `code-reviewer` skill directory. Use lowercase owner/repo names and replace `/` with `__`.
 
-Use lowercase owner and repo names. Replace `/` with `__`.
-
-Always check the exact memory file for the repository being reviewed before every review, even when the user does not mention memory. Do not list, scan, merge, or consult memory files for other repositories. If the exact file does not exist, proceed without memory and consider creating it only after the user confirms a durable preference or decision.
+Before every review, load only this exact file if it exists. Never list, scan, merge, or infer preferences from memory files for other repositories. If the file is missing, proceed without memory.
 
 ## Format
-
 Use this compact shape:
 
 ```yaml
@@ -27,51 +23,61 @@ review_output:
   github_comments: inline
 ```
 
-## What To Store
-
-Store only durable, confirmed decisions:
+## Store
+Store only durable, confirmed decisions that can guide future reviews beyond the current PR, file, class, method, endpoint, or one-off implementation:
 
 - Preferred output format.
 - Review strictness preferences.
 - Accepted exceptions to general best practices.
 - Repeatedly accepted architectural constraints.
 
-Each entry should be one short sentence or a small object with `topic`, `decision`, and optional `source`.
+Prefer compact entries:
 
-## Proactive Suggestions
+```yaml
+- topic: concise category
+  decision: general rule or preference
+  source: optional short note such as "user-confirmed"
+```
 
-After user feedback, analyze whether anything should become memory. Suggest saving it when it is:
+Use one short sentence for `decision`. Write the durable rule, not the triggering occurrence.
 
-- Durable across future reviews.
-- Specific enough to guide behavior.
+## Curation Gate
+Propose or save memory only when all checks pass:
+
+- Reusable across future PRs in another file or area.
+- Generalized beyond the exact line, file, component, method, issue, or PR.
 - Confirmed by the user or clearly accepted.
-- Safe to store without code, secrets, or transient PR details.
+- Actionable without reading the original PR.
+- Safe: no code snippets, secrets, customer data, or transient facts.
+- Non-duplicative with existing memory.
 
-Do not wait for the user to ask for memory if their feedback reveals a reusable preference.
+If the point is useful but too local, generalize it first. If it cannot be generalized safely, explain briefly and do not save it.
 
-When the user explains why a review finding should pass, proactively suggest saving a compact `accepted_exceptions` entry. Include the tradeoff or boundary, not the full PR context.
+## Propose
+After user feedback, always check whether a confirmed preference should become memory. Ask with the exact generalized wording you intend to save:
 
-If the feedback should not be stored, explain why briefly. Common reasons:
+`Should I save this memory for future reviews: "Controllers should not contain business logic"?`
 
-- It only applies to the current PR.
-- It contains code, secrets, or sensitive details.
-- It conflicts with current project docs or stronger evidence.
-- It is too vague to guide future reviews.
+Architecture answers are memory candidates only when they define reusable conventions. When the user explains why a finding should pass, suggest a compact `accepted_exceptions` entry only if the tradeoff is reusable.
 
-## What Not To Store
+Do not store feedback that:
 
-Never store:
+- Only applies to the current PR.
+- Names a specific file, method, component, controller, issue, or diff line instead of a reusable rule.
+- Contains code, secrets, or sensitive details.
+- Conflicts with current project docs or stronger evidence.
+- Is too vague to guide future reviews.
 
-- PR diffs.
-- Code snippets.
+## Never Store
+
+- PR diffs or code snippets.
 - Secrets, tokens, credentials, or private customer data.
-- Long explanations.
-- Temporary PR facts.
+- Long explanations or temporary PR facts.
+- File-, class-, method-, component-, issue-, or PR-specific findings.
 - Guesses that the user did not confirm.
 
-## Update Rules
-
-Before updating memory, confirm that the decision should be remembered unless the user explicitly said so.
+## Update
+Before updating memory, confirm the exact generalized wording unless the user already provided final text and asked to save it.
 
 Before adding a new `preferences` or `accepted_exceptions` entry, check the existing entries and do not create duplicate or substantially equivalent memories. Update or remove an existing entry only when the confirmed decision changes.
 

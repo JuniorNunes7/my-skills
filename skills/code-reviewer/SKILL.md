@@ -1,20 +1,18 @@
 ---
 name: code-reviewer
-description: Use this skill when reviewing GitHub pull requests or diffs in any programming language, especially when the user wants critical code review feedback, inline GitHub comments, Markdown review drafts, SOLID and best-practice analysis, project-pattern alignment, documentation checks, or memory of confirmed review preferences.
+description: Review GitHub pull requests or raw diffs in any language. Use for critical code-review findings, preferred inline GitHub comments, Markdown review drafts, project-pattern/SOLID/docs/test checks, and confirmed repo review-memory preferences.
 ---
 
 # Code Reviewer
 
-## Overview
+## Defaults
+Review PRs/diffs with project context. Help the user understand what changed, what is risky, and what should improve before merge.
 
-Use this skill to review GitHub pull requests with project context. The goal is to help the user understand what changed, what is risky, and what should be improved before merge.
-
-Default language is Brazilian Portuguese. Keep findings direct, factual, and actionable.
+Default to Brazilian Portuguese. Keep findings direct, factual, and actionable.
 
 Do not edit PR code or change repository files during review unless the user separately asks for implementation work.
 
 ## Inputs
-
 Accept either:
 
 - A GitHub PR URL.
@@ -24,49 +22,30 @@ Accept either:
 If the PR target is missing and cannot be inferred, ask for it before reviewing.
 
 ## Required Workflow
-
-1. Identify the repository, PR number, base branch, head branch, changed files, commits, existing comments, and review threads.
-2. Always check external skill memory before reviewing. Load only the exact repo memory file `../code-reviewer-data/memories/<owner>__<repo>.yaml` relative to this skill directory if it exists, then apply only compact, confirmed preferences that are relevant to this review. Never scan, merge, or infer preferences from memory files for other repositories.
-3. Gather minimal project context before judging the changes:
-   - PR metadata, diff, file list, comments, and review threads via GitHub MCP.
-   - Project docs and conventions such as `README`, `CONTRIBUTING`, architecture docs, lint/test configs, package manifests, and nearby tests.
-   - Similar files or existing implementations when the changed code depends on project style.
-4. Review for correctness first, then design quality:
-   - Bugs, regressions, security, broken contracts, data loss, missing tests, and production risk.
-   - Human-readable simplicity, SOLID, maintainability, readability, project patterns, docs, and developer experience.
-5. Ask the user when a high-impact convention cannot be inferred from code or docs. Do not invent project policy.
-6. Decide the output with the user for each PR:
-   - Markdown draft.
-   - GitHub review using inline comments.
-7. Publishing to GitHub always requires explicit confirmation. Inline comments are the default for publishable findings. Findings without an exact diff line go into the review body.
-8. After the user reacts to the review, proactively identify feedback or decisions that may be worth remembering. Suggest saving only durable, useful memory; if the feedback is too specific, unsafe, contradictory, or not reusable, explain why it should not be stored.
+1. Identify the repo, PR number, base/head branches, commits, changed files, comments, and review threads.
+2. Read only the exact repo memory file described in `references/memory-policy.md`, then apply relevant confirmed preferences.
+3. Gather context with `references/context-policy.md` before judging the diff.
+4. Review correctness first: bugs, regressions, security, contracts, data loss, tests, and production risk.
+5. Then review design quality: simplicity, maintainability, SOLID where useful, readability, project patterns, docs, and developer experience.
+6. Resolve high-impact ambiguity with a focused question; do not ask about low-impact style or discoverable facts.
+7. Choose output with the user: Markdown draft or GitHub review. Prefer inline comments for actionable findings with exact diff lines.
+8. Publish to GitHub only after explicit confirmation. Put findings without exact diff lines in the review body.
+9. After user feedback or architectural answers, use `references/memory-policy.md` to propose only durable, generalized memory.
 
 ## Review Standards
+Read only the needed reference files:
+- `references/review-rubric.md`: priorities, severity, and finding shape.
+- `references/context-policy.md`: context budget, tool use, and clarification questions.
+- `references/output-policy.md`: Markdown/GitHub formats and publish rules.
+- `references/memory-policy.md`: repo memory read/update rules.
 
-Use `references/review-rubric.md` for severity, finding shape, and review priorities.
+## Tools
+Use GitHub MCP first for PR data, repository files/search, review threads, and confirmed publishing. If inline review comments are unavailable, offer Markdown instead of top-level issue comments.
 
-Use `references/context-policy.md` to decide how much code/docs to fetch before commenting.
+Use additional MCPs or skills only when they materially improve confidence, for example:
 
-Use `references/output-policy.md` for Markdown and GitHub review formats.
-
-Use `references/memory-policy.md` before reading or updating external repo memory.
-
-## MCP And Skills
-
-Use GitHub MCP as the primary source for PR data and for publishing review comments when the user confirms.
-
-When GitHub MCP tools are available, prefer PR info, patch, changed filenames, comments, review threads, repository file fetches, and repository search before asking the user for code. For publishing, use the review API that supports inline file comments. If only top-level issue comments are available, do not publish review findings automatically; offer a Markdown draft instead.
-
-Use additional MCPs or skills only when they clearly improve the review, for example:
-
-- Official docs MCP or browsing for current API/framework behavior when a finding depends on external semantics.
+- Official docs or browsing for current API/framework behavior.
 - UI/UX skills for frontend visual or interaction review.
-- Language or ecosystem-specific tools available in the project for tests, type checks, or static analysis.
+- Project tests, type checks, linters, or static analysis when a checkout is available.
 
 If a tool is unavailable, state the limitation and request the smallest missing context needed.
-
-## Memory Updates
-
-After a review or after user feedback, proactively suggest memory updates for decisions the user confirmed or clearly accepted. Keep entries short and durable. Never store PR diffs, code snippets, secrets, transient facts, or long explanations.
-
-When a preference is uncertain, ask before storing it. If a proposed memory entry is not appropriate, explain the reason and continue without storing it.

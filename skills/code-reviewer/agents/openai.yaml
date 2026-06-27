@@ -1,8 +1,7 @@
 interface:
   display_name: "Code Reviewer"
   short_description: "Review GitHub PRs with project context"
-  brand_color: "#2563EB"
-  default_prompt: "Use $code-reviewer to review this GitHub PR and prepare concise inline comments."
+  default_prompt: "Use $code-reviewer to review this GitHub PR and prefer concise inline comments for actionable findings."
 dependencies:
   tools:
     - type: "mcp"
